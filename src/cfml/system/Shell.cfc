@@ -758,6 +758,7 @@ component accessors="true" singleton {
 	function callCommand(
 		required any command,
 		returnOutput=false,
+		notInteractive=false,
 		string piped,
 		boolean initialCommand=false )  {
 
@@ -779,12 +780,12 @@ component accessors="true" singleton {
 
 			if( isArray( command ) ) {
 				if( structKeyExists( arguments, 'piped' ) ) {
-					var result = variables.commandService.runCommandTokens( arguments.command, piped, returnOutput );
+					var result = variables.commandService.runCommandTokens( arguments.command, piped, returnOutput, notInteractive );
 				} else {
-					var result = variables.commandService.runCommandTokens( tokens=arguments.command, captureOutput=returnOutput );
+					var result = variables.commandService.runCommandTokens( tokens=arguments.command, captureOutput=returnOutput, getInteractive=notInteractive );
 				}
 			} else {
-				var result = variables.commandService.runCommandLine( arguments.command, returnOutput );
+				var result = variables.commandService.runCommandLine( arguments.command, returnOutput, notInteractive );
 			}
 
 		// This type of error is recoverable-- like validation error or unresolved command, just a polite message please.

@@ -44,7 +44,8 @@ component{
 	* @command.hint The full operating system command to execute including the binary and any parameters
 	**/
 	function run(
-		required command
+		required command,
+		string notInteractive
 	){
 		var interactive = !systemsettings.getSystemSetting( 'box_currentCommandPiped', false );
 
@@ -67,7 +68,11 @@ component{
 		} else {
 			// Pass through bash in interactive mode with -i to expand aliases like "ll".
 			// -c runs input as a command, "&& exits" cleanly from the shell as long as the original command ran successfully
-			commandArray = [ nativeShell, '-i', '-c', arguments.command & ' 2>&1; ( exit $? > /dev/null )' ];
+			if(arguments.notInteractive == "FALSE" ){
+				commandArray = [ nativeShell, '-i', '-c', arguments.command & ' 2>&1; ( exit $? > /dev/null )' ];
+			} else {
+				commandArray = [ nativeShell, '-c', arguments.command & ' 2>&1; ( exit $? > /dev/null )' ];
+			}
 		}
 
 		if( configService.getSetting( 'debugNativeExecution', false ) ) {

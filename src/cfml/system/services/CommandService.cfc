@@ -145,17 +145,17 @@ component accessors="true" singleton {
 	 * @piped.hint Data to pipe in to the first command
 	 * @captureOutput Temp workaround to allow capture of run command
  	 **/
-	function runCommandTokens( required array tokens, string piped, boolean captureOutput=false ){
+	function runCommandTokens( required array tokens, string piped, boolean captureOutput=false, boolean getInteractive=false ){
 
 		// Resolve the command they are wanting to run
 		var commandChain = resolveCommandTokens( tokens );
 
 		// If there was piped input
 		if( structKeyExists( arguments, 'piped' ) ) {
-			return runCommand( commandChain, tokens.toList( ' ' ), arguments.piped, captureOutput );
+			return runCommand( commandChain, tokens.toList( ' ' ), arguments.piped, captureOutput, getInteractive );
 		}
 
-		return runCommand( commandChain=commandChain, line=tokens.toList( ' ' ), captureOutput=captureOutput );
+		return runCommand( commandChain=commandChain, line=tokens.toList( ' ' ), captureOutput=captureOutput, getInteractive=getInteractive );
 
 	}
 
@@ -164,12 +164,16 @@ component accessors="true" singleton {
 	 * @commandChain.hint the chain of commands to run
 	 * @captureOutput Temp workaround to allow capture of run command
  	 **/
-	function runCommand( required array commandChain, required string line, string piped, boolean captureOutput=false ){
+	function runCommand( required array commandChain, required string line, string piped, boolean captureOutput=false, boolean getInteractive=false ){
 		// If nothing is returned, something bad happened (like an error instantiating the CFC)
 		if( !commandChain.len() ){
 			return 'Command not run.';
 		}
 
+		var isInteractive = "TRUE";
+		if( !getInteractive ) {
+			isInteractive = "FALSE";
+		}
 		var i = 0;
 		// default behavior is to keep trucking
 		var previousCommandSeparator = ';';
@@ -342,7 +346,12 @@ component accessors="true" singleton {
 				interceptorService.announceInterception( 'preCommand', { commandInfo=commandInfo, parameterInfo=parameterInfo } );
 
 				// Run the command
-				var result = commandInfo.commandReference.CFC.run( argumentCollection = parameterInfo.namedParameters );
+				var result 
+				if( isInteractive ) {
+					result = commandInfo.commandReference.CFC.run( argumentCollection = parameterInfo.namedParameters, notInteractive = isInteractive );
+				} else {
+					result = commandInfo.commandReference.CFC.run( argumentCollection = parameterInfo.namedParameters );
+				}
 				lastCommandErrored = commandInfo.commandReference.CFC.hasError();
 
 			} catch( any e ){
