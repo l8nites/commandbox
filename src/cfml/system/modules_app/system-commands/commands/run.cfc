@@ -45,7 +45,7 @@ component{
 	**/
 	function run(
 		required command,
-		string notInteractive
+		boolean notInteractive
 	){
 		var interactive = !systemsettings.getSystemSetting( 'box_currentCommandPiped', false );
 
@@ -68,7 +68,7 @@ component{
 		} else {
 			// Pass through bash in interactive mode with -i to expand aliases like "ll".
 			// -c runs input as a command, "&& exits" cleanly from the shell as long as the original command ran successfully
-			if(arguments.notInteractive == "FALSE" ){
+			if(! arguments.notInteractive ){
 				commandArray = [ nativeShell, '-i', '-c', arguments.command & ' 2>&1; ( exit $? > /dev/null )' ];
 			} else {
 				commandArray = [ nativeShell, '-c', arguments.command & ' 2>&1; ( exit $? > /dev/null )' ];

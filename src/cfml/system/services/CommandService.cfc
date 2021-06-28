@@ -170,10 +170,6 @@ component accessors="true" singleton {
 			return 'Command not run.';
 		}
 
-		var isInteractive = "TRUE";
-		if( !getInteractive ) {
-			isInteractive = "FALSE";
-		}
 		var i = 0;
 		// default behavior is to keep trucking
 		var previousCommandSeparator = ';';
@@ -347,8 +343,8 @@ component accessors="true" singleton {
 
 				// Run the command
 				var result 
-				if( isInteractive ) {
-					result = commandInfo.commandReference.CFC.run( argumentCollection = parameterInfo.namedParameters, notInteractive = isInteractive );
+				if( getInteractive ) {
+					result = commandInfo.commandReference.CFC.run( argumentCollection = parameterInfo.namedParameters, notInteractive = getInteractive );
 				} else {
 					result = commandInfo.commandReference.CFC.run( argumentCollection = parameterInfo.namedParameters );
 				}
