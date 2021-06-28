@@ -342,12 +342,7 @@ component accessors="true" singleton {
 				interceptorService.announceInterception( 'preCommand', { commandInfo=commandInfo, parameterInfo=parameterInfo } );
 
 				// Run the command
-				var result 
-				if( getInteractive ) {
-					result = commandInfo.commandReference.CFC.run( argumentCollection = parameterInfo.namedParameters, notInteractive = getInteractive );
-				} else {
-					result = commandInfo.commandReference.CFC.run( argumentCollection = parameterInfo.namedParameters );
-				}
+				var result = commandInfo.commandReference.CFC.run( argumentCollection = parameterInfo.namedParameters, notInteractive = getInteractive );
 				lastCommandErrored = commandInfo.commandReference.CFC.hasError();
 
 			} catch( any e ){
